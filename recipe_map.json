@@ -1,0 +1,32 @@
+{
+  "Figma.pkg": {
+    "test_name": "Figma (Early Access)",
+    "test_category": "Productivity"
+  },
+  "GoogleChrome.pkg": {
+    "prod_name": "Google Chrome",
+    "test_name": "Google Chrome (Soak Test)"
+  },
+  "GoogleDrive.pkg": {
+    "prod_name": "Google Drive",
+    "test_name": "Google Drive (Testing)"
+  },
+  "GitHubDesktop.pkg": {
+    "prod_name": "GitHub Desktop",
+    "ss_category": "Utilities"
+  },
+  "MicrosoftDefender.pkg": {
+    "prod_name": "MSFT Defender",
+    "test_name": "MSFT Defender (Soak Test)"
+  },
+  "Rectangle.pkg": {
+    "prod_name": "Rectangle (Window Manager)",
+    "ss_category": "Utilities"
+  },
+  "Thunderbird.pkg": {
+    "prod_name": "Thunderbird",
+    "test_name": "Thunderbird (Testing)",
+    "ss_category": "Productivity",
+    "test_category": "Utilities"
+  }
+}
