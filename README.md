@@ -60,7 +60,7 @@ Before running KAPPA, ensure you have the following:
 > Capture modified `.json` files and deploy them during runtime to overwrite repo defaults
 
 
-[See below](#setup.command) for available `setup.command` flags
+[See below](#setupcommand-flags) for available `setup.command` flags
 
 ## Usage
 
@@ -91,7 +91,7 @@ KAPPA supports both in-recipe and centralized options for customizing your AutoP
 
 - `config.json` includes defaults if no per-recipe settings are found
   - Config can be modified as desired to set preferred defaults
-  - [See below](#config.json) for an overview of available options and a sample config
+  - [See below](#configjson) for an overview of available options and a sample config
 
 ### In-Recipe
 
@@ -117,7 +117,7 @@ KAPPA supports both in-recipe and centralized options for customizing your AutoP
     - Custom app name (test)
     - Self Service category
     - Self Service category (test)
-  - [See below](#recipe_map.json) for a sample config
+  - [See below](#recipe_mapjson) for a sample config
 
 > [!TIP]
 > Running `./setup.command -m` exports a .csv containing all AutoPkg recipes, Custom App names, and Self Service categories to help populate `recipe_map.json`
@@ -156,7 +156,7 @@ KAPPA supports both in-recipe and centralized options for customizing your AutoP
     - Days until enforcement values are configurable in `config.json`
   - If `audit_enforce` is set but no values provided for `prod_name` or `test_name`, KAPPA still uses the prod delay set in `config.json`
     - If delay values are removed from `config.json`, KAPPA will fall back to an enforcement delay of **3 days**
-- [See below](#audit-enforcement-example-output) for Kandji audit/enforcement output examples
+- [See below](#audit-enforcement-examples) for Kandji audit/enforcement output examples
 - If enforcement is due, but the app in use by the user, the user will be prompted to close the app, else delay one hour
 ![Delay Available](https://github.com/kandji-inc/support/assets/27963671/c74148c5-5e8e-4673-a04e-e2ef480604f7)
 - Once the delay has lapsed, the user will again be prompted to quit, but with no delay option
