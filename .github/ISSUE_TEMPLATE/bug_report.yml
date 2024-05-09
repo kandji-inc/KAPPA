@@ -1,0 +1,96 @@
+name: Bug Report
+description: Create a report to help improve the product
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: "## Report issues with Kandji's AutoPkg processor, KAPPA"
+  - type: checkboxes
+    id: nodupes
+    attributes:
+      label: New Bug Check
+      description: Search for [similar bug reports](../issues) before submitting
+      options:
+        - label: _I have searched the repo and confirm this is a new bug report_
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please provide a clear and concise description of the issue
+      placeholder: |
+        When I run...
+        The result is...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduce
+      description: Steps to reproduce the issue
+      placeholder: |
+        autopkg run -vvv RECIPE.pkg --post io.kandji.kappa/KAPPA ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What is the expected behavior?
+      placeholder: |
+        I would expect...
+    validations:
+      required: true
+  - type: textarea
+    id: response
+    attributes:
+      label: AutoPkg response
+      description: Output of the `autopkg run -vvv` command containing the error/exception (redacting sensitive information)
+      render: python
+      placeholder: |
+        Traceback (most recent call last):
+          File "/Library/AutoPkg/autopkglib/__init__.py", line 840, in process
+            self.env = processor.process()
+          File "/Library/AutoPkg/autopkglib/__init__.py", line 626, in process
+            self.main()
+          File "~/Library/AutoPkg/RecipeRepos/com.github.kandji-inc.KAPPA/KAPPA.py", line 227, in main
+            self.populate_from_config()
+          File "~/Library/AutoPkg/RecipeRepos/com.github.kandji-inc.KAPPA/helpers/configs.py", line 330, in populate_from_config
+            raise ProcessorError("ERROR: Kandji API URL is invalid! Run 'setup.command' and try again")
+        autopkglib.ProcessorError: ERROR: Kandji API URL is invalid! Run 'setup.command' and try again
+          File "/Library/AutoPkg/autopkglib/__init__.py", line 840, in process
+            self.env = processor.process()
+        ERROR: Kandji API URL is invalid! Run 'setup.command' and try again
+    validations:
+      required: true
+  - type: input
+    id: autopkgvers
+    attributes:
+      label: AutoPkg version
+      description: Output of `autopkg version`
+      placeholder: |
+        2.7.2
+    validations:
+      required: true
+  - type: textarea
+    id: macOSvers
+    attributes:
+      label: macOS version
+      description: Output of `/usr/bin/sw_vers`
+      render: bash
+      placeholder: |
+        ProductName:        macOS
+        ProductVersion:     14.4.1
+        BuildVersion:       23E224
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Info
+      description: Additional info you want to provide such as logs, system info, screenshots, etc.
+    validations:
+      required: false
