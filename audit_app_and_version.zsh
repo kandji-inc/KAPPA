@@ -1,10 +1,10 @@
-#!/bin/zsh
+#!/bin/zsh -f
 #
 # Audit script used to enforce Kandji custom app; programmatically populated during KAPPA runtime
-# Searches for install via populated bundle identifier/app name or from receipt DB given package ID 
+# Searches for install via populated bundle identifier/app name or from receipt DB given package ID
 # If not found, immediately triggers custom app installation (regardless of any configured delays)
 # If found, determines if version enforcement due; if so, triggers install if installed < required
-# If app is open in foreground, prompts user to close app with one-time option to defer one hour 
+# If app is open in foreground, prompts user to close app with one-time option to defer one hour
 
 ##############################
 ########## VARIABLES #########
@@ -202,7 +202,7 @@ function check_blocking_proc() {
         fi
         return 0
     fi
-    
+
     # If open, assign values from lsappinfo
     ls_bundle_name=$(grep "CFBundleName" <<< "${app_open_check}" | cut -d '"' -f4)
     ls_display_name=$(grep "LSDisplayName" <<< "${app_open_check}" | cut -d '"' -f4)
@@ -278,7 +278,7 @@ function prompt_close_app() {
         giving up after 300
     end tell
 EOF
-)
+    )
     exitc=$?
 
     if grep -q "got an error: Application" <<< ${applescript_out}; then
@@ -445,8 +445,9 @@ function validate_version() {
 function main() {
 
     # Set ID for logging to APP_NAME, PKG_ID, or BUNDLE_ID
+    # shellcheck disable=SC2299
     IDENTIFIER="${${APP_NAME:-$PKG_ID}:-$BUNDLE_ID}"
-    
+
     if [[ -z ${BUNDLE_ID} && -z ${APP_NAME} ]]; then
         echo "Neither BUNDLE_ID nor APP_NAME defined"
         if [[ -n ${PKG_ID} ]]; then

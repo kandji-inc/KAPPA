@@ -100,7 +100,6 @@ class Utilities(Processor):
             else curl_shell_exec
         )
         # Shell out to cURL and validate success
-        print(f"Running cURL command: {curl_shell_exec}")
         raw_out = run(curl_shell_exec, stdout=PIPE, stderr=STDOUT, shell=True, check=False)
         exit_code = raw_out.returncode
         decoded_out = raw_out.stdout.decode().strip()
@@ -147,6 +146,8 @@ class Utilities(Processor):
                     self.s3_generated_req = response
                 case "upload":
                     self.output(f"Successfully uploaded {self.pkg_name}!")
+                    # Initial sleep allowing S3 to process upload
+                    time.sleep(5)
                 case "create" | "update":
                     custom_app_id = response.get("id")
                     custom_name = response.get("name")
@@ -516,9 +517,8 @@ class Utilities(Processor):
                 f"Found Duplicates of Custom App {self.custom_app_name}",
                 f"{slack_body}",
             )
-            raise ProcessorError(
-                f"More than one match ({len(app_picker)}) returned for provided LI name! Cannot upload...\n{slack_body}"
-            )
+            # Return None to bypass remaining steps
+            return None
         try:
             return next(iter(app_picker))
         except StopIteration:
