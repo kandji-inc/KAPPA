@@ -38,7 +38,6 @@
 
 import os
 import sys
-import time
 from pathlib import Path
 
 sys.path.append(Path(__file__).parent.as_posix())
@@ -160,15 +159,17 @@ class KAPPA(Configurator, Utilities):
         if self.custom_app_name is not None:
             lib_item_dict = self._find_lib_item_match()
 
+        # Returns None if multiple matches, False if no matches
+        if lib_item_dict is None:
+            return False
         if lib_item_dict is False:
             if self.default_auto_create is True:
                 self.output("WARNING: Could not find existing custom app to update — creating as new")
                 return self.create_custom_app()
             else:
-                self.output("ERROR: Could not locate existing custom app to update — auto-create is disabled")
-                self.output("ERROR: Exiting KAPPA and raising exception...")
-                self._restore_audit() if self.custom_app_enforcement == "continuously_enforce" else True
-                raise ProcessorError
+                self.output("ERROR: Could not locate existing custom app to update")
+                self.output("ERROR: Auto-create is disabled — skipping remaining steps")
+                return False
 
         update_data = f"-F 'file_key={self.s3_key}'"
 
@@ -235,8 +236,6 @@ class KAPPA(Configurator, Utilities):
         #### MAIN EXEC ####
         ###################
         if self.upload_custom_app() is True:
-            # Initial sleep allowing S3 to process upload
-            time.sleep(5)
             # Iterate over dict specifying app type and name
             for key, value in self.app_names.items():
                 if key == "test_name":
