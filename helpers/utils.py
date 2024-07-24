@@ -166,7 +166,7 @@ class Utilities(Processor):
                     self.output(
                         f"Assignment for 'action' must be one of [get|get_selfservice|presign|upload|create|update]; got '{action}'"
                     )
-                    return False
+                    raise ProcessorError(f"Assignment for 'action' must be one of [get|get_selfservice|presign|upload|create|update]; got '{action}'")
             return True
         elif http_code == 503 and (action.lower() == "update" or "create"):
             self.output(f"WARNING: (HTTP {http_code}): {response.get('detail')}\nRetrying in five seconds...")
@@ -181,14 +181,16 @@ class Utilities(Processor):
         else:
             error_body = f"`{self.custom_app_name}`/`{self.pkg_name}` failed to {action}: `{response}`"
             if http_code == 401:
-                error_body += "\nValidate token is set/permissions and try again"
+                error_body += "\nValidate token is set and try again"
+            elif http_code == 403:
+                error_body += "\nValidate token permissions and try again"
             self.output(f"ERROR: Failed to {action.capitalize()} Custom App (HTTP {http_code})\n{error_body}")
             self.slack_notify(
                 "ERROR",
                 f"Failed to {action.capitalize()} Custom App (HTTP {http_code})",
                 f"{error_body}",
             )
-            return False
+            raise ProcessorError(f"ERROR: Failed to {action.capitalize()} Custom App (HTTP {http_code})\n{error_body}")
 
     ######################
     # Audit Script Funcs
@@ -200,7 +202,7 @@ class Utilities(Processor):
         Searches for our keys and updates them with assigned vals
         Creates a backup file before modification"""
         epoch_now = datetime.now().strftime("%s")
-        with FileInput(files=self.audit_script_path, inplace=True, backup=".bak") as f:
+        with FileInput(files=self.audit_script_path, inplace=True, backup=".bak", encoding="utf-8") as f:
             for line in f:
                 line = line.rstrip()  # noqa: PLW2901
                 if "APP_NAME=" in line and hasattr(self, "app_name") and self.app_name is not None:

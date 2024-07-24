@@ -219,7 +219,9 @@ class Configurator(Processor):
                     category.get("id") for category in self.self_service if category.get("name") == ss_name
                 )
             except StopIteration:
-                self.output(f"WARNING: Provided category '{ss_name}' not found in Self Service!") if ss_name is not None else None
+                self.output(
+                    f"WARNING: Provided category '{ss_name}' not found in Self Service!"
+                ) if ss_name is not None else None
                 try:
                     # Set category id to default (None check performed later)
                     ss_assignment = (
@@ -291,6 +293,13 @@ class Configurator(Processor):
 
         # Grab auth token for Kandji API interactions
         self.kandji_token = self._retrieve_token(self.kandji_token_name)
+        if self.kandji_token is None:
+            self.output(
+                f"ERROR: Could not retrieve token value from key {self.kandji_token_name}! Run 'setup.command' and try again"
+            )
+            raise ProcessorError(
+                f"ERROR: Could not retrieve token value from key {self.kandji_token_name}! Run 'setup.command' and try again"
+            )
 
     ####################################
     ######### PUBLIC FUNCTIONS #########
