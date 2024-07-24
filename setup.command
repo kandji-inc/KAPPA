@@ -67,7 +67,7 @@ config_file="${abs_dir}/${config_name}"
 kandji_api_re='^[A-Za-z0-9]+\.api(\.eu)?\.kandji\.io$'
 # xdigit is an RE pattern match for valid hex chars
 kandji_token_re='[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}'
-slack_webhook_re='https://hooks.slack.com/services/[[:alnum:]]{9}/[[:alnum:]]{11}/[[:alnum:]]{24}'
+slack_webhook_re='https://hooks.slack.com/services/[[:alnum:]]{9,11}/[[:alnum:]]{11}/[[:alnum:]]{24}'
 
 # Get login keychain for user
 user_keychain_path=$(security login-keychain | xargs)
@@ -467,8 +467,16 @@ function check_store_env() {
                 else
                     dotfile_name=".profile"
                 fi
+                dotfile_path="/Users/${user}/${dotfile_name}"
+                # Export token, write to dotfile
+                if grep -q "export ${token_name}=" "${dotfile_path}"; then
+                    # Update existing token value if present
+                    sed -i '' "s|export ${token_name}=.*|export ${token_name}=${BEARER_TOKEN}|g" "${dotfile_path}"
+                else
+                    echo "export ${token_name}=${BEARER_TOKEN}" >> "${dotfile_path}"
+                fi
                 # shellcheck disable=SC1090
-                echo "export ${token_name}=${BEARER_TOKEN}" >> "/Users/${user}/${dotfile_name}" && source "/Users/${user}/${dotfile_name}"
+                source "${dotfile_path}"
                 check_store_env
             fi
         else
@@ -521,7 +529,7 @@ function check_store_keychain() {
                 prompt_for_secret "${token_type}"
                 echo "\n$(date +'%r') : Adding token to login keychain"
                 echo "$(date +'%r') : Enter your password if prompted to unlock keychain"
-                if ! security unlock-keychain -u; then
+                if ! security unlock-keychain -u ${user_keychain_path}; then
                     echo "$(date +'%r') : ERROR: Unable to unlock keychain; exiting"
                     exit 1
                 fi
