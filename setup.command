@@ -31,6 +31,7 @@
 # Provide arg support to only set config file
 zparseopts -D -E -a opts h -help c -config m -map r -reset
 # Set args for help and show message
+# shellcheck disable=SC2154
 if (( ${opts[(I)(-h|--help)]} )); then
     /bin/cat <<EOF
 Usage: ./setup.command [-h/--help|-c/--config|-m/--map|-r/--reset]
