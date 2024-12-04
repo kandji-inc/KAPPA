@@ -369,8 +369,10 @@ function prompt_for_value() {
     key_name=${1}
     example_val=${2}
     echo
+    # @formatter:off
     read "CONFIG_VALUE?Enter value for ${key_name} (e.g. ${example_val}):
 "
+    # @formatter:on
     if [[ -n ${CONFIG_VALUE} ]]; then
         if grep -q -w -E "${value_regex_pattern}" <<< "${CONFIG_VALUE}"; then
             return 0
