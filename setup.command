@@ -537,7 +537,7 @@ function check_store_keychain() {
                     exit 1
                 fi
                 security add-generic-password -U -a "KAPPA" -s "${token_name}" -w "${BEARER_TOKEN}" \
-                -T "/usr/bin/security" -T "${ZSH_ARGZERO}" ${user_keychain_path}
+                    -T "/usr/bin/security" -T "${ZSH_ARGZERO}" ${user_keychain_path}
                 check_store_keychain
             fi
         else
