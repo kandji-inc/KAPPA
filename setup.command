@@ -31,6 +31,7 @@
 # Provide arg support to only set config file
 zparseopts -D -E -a opts h -help c -config m -map r -reset
 # Set args for help and show message
+# shellcheck disable=SC2154
 if (( ${opts[(I)(-h|--help)]} )); then
     /bin/cat <<EOF
 Usage: ./setup.command [-h/--help|-c/--config|-m/--map|-r/--reset]
@@ -74,8 +75,8 @@ user_keychain_path=$(security login-keychain | xargs)
 
 # AutoPkg download/shasum variables
 autopkg_latest_url="https://api.github.com/repos/autopkg/autopkg/releases/latest"
-autopkg_pinned_pkg="https://github.com/autopkg/autopkg/releases/download/v2.7.2/autopkg-2.7.2.pkg"
-autopkg_pinned_shasum="2ff34daf02256ad81e2c74c83a9f4c312fa2f9dd212aba59e0cef0e6ba1be5c9" # pragma: allowlist secret
+autopkg_pinned_pkg="https://github.com/autopkg/autopkg/releases/download/v2.7.3/autopkg-2.7.3.pkg"
+autopkg_pinned_shasum="1944a69aad18b0b9618b48292d115412a98ca165b626f48b11bbc59b504af082" # pragma: allowlist secret
 autopkg_temp_dl="/tmp/autopkg.pkg"
 
 ##############################
@@ -368,8 +369,10 @@ function prompt_for_value() {
     key_name=${1}
     example_val=${2}
     echo
+    # @formatter:off
     read "CONFIG_VALUE?Enter value for ${key_name} (e.g. ${example_val}):
 "
+    # @formatter:on
     if [[ -n ${CONFIG_VALUE} ]]; then
         if grep -q -w -E "${value_regex_pattern}" <<< "${CONFIG_VALUE}"; then
             return 0
@@ -534,7 +537,7 @@ function check_store_keychain() {
                     exit 1
                 fi
                 security add-generic-password -U -a "KAPPA" -s "${token_name}" -w "${BEARER_TOKEN}" \
-                -T "/usr/bin/security" -T "${ZSH_ARGZERO}" ${user_keychain_path}
+                    -T "/usr/bin/security" -T "${ZSH_ARGZERO}" ${user_keychain_path}
                 check_store_keychain
             fi
         else
