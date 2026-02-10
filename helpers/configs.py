@@ -173,14 +173,22 @@ class Configurator(Processor):
             else "install_once"
         )
         # Assign enforcement delays for audits
+        self.test_delay = None
+        self.prod_delay = None
         if config_enforcement.get("delays"):
             global_delays = config_enforcement.get("delays")
             self.test_delay = global_delays.get("test")
             self.prod_delay = global_delays.get("prod")
-            # Override with recipe values if provided
-            if self.recipe_enforcement_delays:
-                self.test_delay = self.recipe_enforcement_delays.get("test", self.test_delay)
-                self.prod_delay = self.recipe_enforcement_delays.get("prod", self.prod_delay)
+        # Override with recipe values if provided (independent of global delays)
+        if self.recipe_enforcement_delays:
+            self.output(
+                f"Recipe override: enforcement delays "
+                f"prod={self.recipe_enforcement_delays.get('prod', self.prod_delay)}, "
+                f"test={self.recipe_enforcement_delays.get('test', self.test_delay)} "
+                f"(global: prod={self.prod_delay}, test={self.test_delay})"
+            )
+            self.test_delay = self.recipe_enforcement_delays.get("test", self.test_delay)
+            self.prod_delay = self.recipe_enforcement_delays.get("prod", self.prod_delay)
 
         self.dry_run = False
         if (self.recipe_dry_run or self.default_dry_run) is True:
