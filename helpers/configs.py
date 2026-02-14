@@ -276,14 +276,23 @@ class Configurator(Processor):
         # Overwrite Kandji API URL from ENV or keep as set in config
         self.kandji_api_url = os.environ.get("KANDJI_API_URL", self.kandji_api_url)
 
-        # Confirm provided Kandji URL is valid
-        status_code, response = self._curl_cmd_exec(url=self.kandji_api_url.replace("api", "web-api"))
+        # Check migration status using gateway endpoint (also validates tenant)
+        migration_check_url = self.kandji_api_url.replace(
+            "api.kandji.io",
+            "gateway.kandji.io/main-backend/app/v1/company/auth-migration-status"
+        )
+        status_code, response = self._curl_cmd_exec(url=migration_check_url)
+
+        # Validate tenant is valid
         if "tenantNotFound" in response.values():
             self.output(f"ERROR: Provided Kandji URL {self.kandji_api_url} appears invalid! Cannot upload...")
             raise ProcessorError(f"ERROR: Provided Kandji URL {self.kandji_api_url} appears invalid! Cannot upload...")
 
-        # Assign tenant URL
-        self.tenant_url = self.kandji_api_url.replace(".api.", ".").replace("kandji.io", "iru.com")
+        # Assign tenant URL based on migration status
+        if response.get("auth_migration_status") in ("STARTED", "COMPLETED"):
+            self.tenant_url = self.kandji_api_url.replace(".api.kandji.io", ".iru.com")
+        else:
+            self.tenant_url = self.kandji_api_url.replace(".api.", ".")
         # Assign API domain
         self.kandji_api_prefix = os.path.join(self.kandji_api_url, "api", "v1")
         # Define API endpoints
