@@ -173,8 +173,7 @@ class Configurator(Processor):
             else "install_once"
         )
         # Assign enforcement delays for audits
-        self.test_delay = None
-        self.prod_delay = None
+        self.test_delay = self.prod_delay = None
         if config_enforcement.get("delays"):
             global_delays = config_enforcement.get("delays")
             self.test_delay = global_delays.get("test")
