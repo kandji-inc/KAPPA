@@ -98,6 +98,8 @@ class Configurator(Processor):
         self.recipe_dry_run = self.env.get("dry_run", None)
         # Assign dict with custom app info
         self.recipe_custom_app = self.env.get("custom_app", None)
+        # Check if recipe has enforcement delay overrides
+        self.recipe_enforcement_delays = self.env.get("enforcement_delays", None)
         if self.recipe_custom_app:
             self.recipe_custom_name = self.recipe_custom_app.get("prod_name", None)
             self.recipe_test_name = self.recipe_custom_app.get("test_name", None)
@@ -171,9 +173,21 @@ class Configurator(Processor):
             else "install_once"
         )
         # Assign enforcement delays for audits
+        self.test_delay = self.prod_delay = None
         if config_enforcement.get("delays"):
-            self.test_delay = config_enforcement.get("delays").get("test")
-            self.prod_delay = config_enforcement.get("delays").get("prod")
+            global_delays = config_enforcement.get("delays")
+            self.test_delay = global_delays.get("test")
+            self.prod_delay = global_delays.get("prod")
+        # Override with recipe values if provided (independent of global delays)
+        if self.recipe_enforcement_delays:
+            self.output(
+                f"Recipe override: enforcement delays "
+                f"prod={self.recipe_enforcement_delays.get('prod', self.prod_delay)}, "
+                f"test={self.recipe_enforcement_delays.get('test', self.test_delay)} "
+                f"(global: prod={self.prod_delay}, test={self.test_delay})"
+            )
+            self.test_delay = self.recipe_enforcement_delays.get("test", self.test_delay)
+            self.prod_delay = self.recipe_enforcement_delays.get("prod", self.prod_delay)
 
         self.dry_run = False
         if (self.recipe_dry_run or self.default_dry_run) is True:
