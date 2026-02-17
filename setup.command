@@ -4,7 +4,7 @@
 # License Information
 ################################################################################################
 #
-# Copyright 2024 Kandji, Inc.
+# Copyright 2026 Iru, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this
 # software and associated documentation files (the "Software"), to deal in the Software
@@ -75,8 +75,8 @@ user_keychain_path=$(security login-keychain | xargs)
 
 # AutoPkg download/shasum variables
 autopkg_latest_url="https://api.github.com/repos/autopkg/autopkg/releases/latest"
-autopkg_pinned_pkg="https://github.com/autopkg/autopkg/releases/download/v2.7.3/autopkg-2.7.3.pkg"
-autopkg_pinned_shasum="1944a69aad18b0b9618b48292d115412a98ca165b626f48b11bbc59b504af082" # pragma: allowlist secret
+autopkg_pinned_pkg="https://github.com/autopkg/autopkg/releases/download/v2.9.0/autopkg-2.9.0.pkg"
+autopkg_pinned_shasum="b858161c4fe20429127a0429cdf1e6e1e2cca66b1b5ec2f81a2b98933b0a66f2" # pragma: allowlist secret
 autopkg_temp_dl="/tmp/autopkg.pkg"
 
 ##############################

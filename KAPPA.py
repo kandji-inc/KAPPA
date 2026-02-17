@@ -6,7 +6,7 @@
 # License Information
 ################################################################################################
 #
-# Copyright 2024 Kandji, Inc.
+# Copyright 2026 Iru, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this
 # software and associated documentation files (the "Software"), to deal in the Software
@@ -54,7 +54,7 @@ class KAPPA(Configurator, Utilities):
     )
     input_variables = {
         "NAME": {"required": True, "description": "Name from AutoPkg recipe (used if no custom_name defined)"},
-        "pkg_path": {"required": True, "description": "Path of the built PKG for upload"},
+        "pkg_path": {"required": False, "description": "Path of the built PKG for upload"},
         "app_name": {"required": False, "description": "Name of .app in payload (for audit script)"},
         "bundleid": {
             "required": False,
@@ -222,6 +222,10 @@ class KAPPA(Configurator, Utilities):
         script_path = Path(__file__).resolve()
         # Capture exec dir path
         self.parent_dir = script_path.parent
+
+        # Ensure pkg_path is defined for post-processing
+        if "pkg_path" not in self.env:
+            raise ProcessorError("Missing required input variable: pkg_path")
 
         # Reads config and assigns needed vars for runtime
         # Also validates and populates values for Kandji/Slack (if defined)
