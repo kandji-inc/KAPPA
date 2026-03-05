@@ -68,6 +68,15 @@ class KAPPA(Configurator, Utilities):
                 "Used to set specify custom app names and Self Service categories"
             ),
         },
+        "enforcement_type": {
+            "required": False,
+            "description": (
+                "Per-recipe enforcement type override. Accepted values: "
+                "'self_service', 'audit_enforce', 'install_once'. "
+                "Overrides the global li_enforcement.type set in config.json. "
+                "Has no effect if ss_category is set (self_service is implied)."
+            ),
+        },
         "create_new": {
             "required": False,
             "description": "Boolean to toggle creation of a new LI (default: False)",
