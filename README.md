@@ -102,6 +102,7 @@ KAPPA supports both in-recipe and centralized options for customizing your AutoP
   - Custom app name (test)
   - Self Service category
   - Self Service category (test)
+  - Enforcement type override (per-recipe)
   - Enforcement delay overrides (prod and/or test)
   - [See below](#autopkg-recipe-config) for an overview of available options and a sample config
 
@@ -308,6 +309,7 @@ Instructions for creating a Kandji API token [can be found here](https://support
 | `custom_app.test_name`   | `str` | Name of test custom app to be created/updated                       |
 | `custom_app.ss_category` | `str` | Toggles on Self Service enforcement for `prod_name` and sets category       |
 | `custom_app.test_category`| `str`| Toggles on Self Service enforcement for `test_name` and sets category  |
+| `enforcement_type`  | `str` | Per-recipe enforcement type override (`audit_enforce`\|`install_once`\|`self_service`). Overrides global `li_enforcement.type` in `config.json`. Has no effect if `ss_category` is set (self_service is implied). |
 | `enforcement_delays`| `dict`| Dictionary overriding global enforcement delay values per-recipe |
 | `enforcement_delays.prod`| `int`| Days before enforcement for production (overrides `config.json`) |
 | `enforcement_delays.test`| `int`| Days before enforcement for testing (overrides `config.json`) |
@@ -335,6 +337,8 @@ Instructions for creating a Kandji API token [can be found here](https://support
                         <key>test_category</key>
                         <string>Utilities</string>
                     </dict>
+                    <key>enforcement_type</key>
+                    <string>audit_enforce</string>
                     <key>enforcement_delays</key>
                     <dict>
                         <key>prod</key>

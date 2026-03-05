@@ -100,6 +100,8 @@ class Configurator(Processor):
         self.recipe_custom_app = self.env.get("custom_app", None)
         # Check if recipe has enforcement delay overrides
         self.recipe_enforcement_delays = self.env.get("enforcement_delays", None)
+        # Check if recipe specifies a per-recipe enforcement type override
+        self.recipe_enforcement_type = self.env.get("enforcement_type", None)
         if self.recipe_custom_app:
             self.recipe_custom_name = self.recipe_custom_app.get("prod_name", None)
             self.recipe_test_name = self.recipe_custom_app.get("test_name", None)
@@ -163,6 +165,20 @@ class Configurator(Processor):
 
         config_enforcement = self.kappa_config.get("li_enforcement")
         enforcement_type = self._parse_enforcement(config_enforcement.get("type"))
+        # Per-recipe override takes precedence over global config (mirrors enforcement_delays behaviour)
+        if self.recipe_enforcement_type:
+            recipe_enforcement_type = self._parse_enforcement(self.recipe_enforcement_type)
+            if recipe_enforcement_type:
+                self.output(
+                    f"Recipe override: enforcement_type '{self.recipe_enforcement_type}' "
+                    f"(global: '{config_enforcement.get('type')}')"
+                )
+                enforcement_type = recipe_enforcement_type
+            else:
+                self.output(
+                    f"WARNING: Unrecognised recipe enforcement_type '{self.recipe_enforcement_type}' — "
+                    f"falling back to global config value"
+                )
         # Check if enforcement type specified, else default to once
         # May be overridden later based on recipe-specific mappings
         self.custom_app_enforcement = (
